@@ -16,24 +16,40 @@ class QuestionsController extends Controller
 
         return $this->sendResponse($Questions->toArray(), 'Questions retrieved successfully.');
     }
+    public function createQuestion(Request $request){
+        $question = new Questions;
+        $question->users_id = $request->users_id;
+        $question->body = $request->body;
+        $question->save();
+
+        return response()->json([
+        "message" => "question record created"
+    ], 201);
+    }
    
-    public function store(Request $request)
-    {
+   public function updateQuestion(Request $request,$id) {
+
         $input = $request->all();
-
-
         $validator = Validator::make($input, [
-            'name' => 'required',
             'body' => 'required'
         ]);
-        if ($validator->fails()) {
+         if ($validator->fails()) {
             return $this->sendError('Validation Error.', $validator->errors());
         }
-        $question= new Questions;
-        $questions->body = $request->body;
-        $questions->user_id = auth()->user()->id;
-        $questions->save();
-        return $this->sendResponse($Questions->toArray(), 'Questions created successfully.');
+
+         if (Questions::where('id', $id)->exists()) {
+        $Question = Questions::where('id', $id)->find($id);
+        $Question->body = $input['body'];
+        $Question->save();
+        return response()->json([$Question,
+                "message" => "Question updated successfully"
+            ], 200);
+    }
+    else{
+        return response()->json([
+                "message" => "Question not found"
+            ], 404);
+    }
     }
 
 

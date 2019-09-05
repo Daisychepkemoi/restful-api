@@ -27,9 +27,43 @@ class AnswersController extends Controller
         if (is_null($Answer)) {
             return $this->sendError('Answer not found.');
         }
-         $oneanswer = Answers::where('id',$id)->with(['Comments'])->get();
+         $oneanswer = Answers::where('id',$answerid)->with(['Comments'])->get();
 
         return $this->sendResponse($oneanswer->toArray(), 'Answer retrieved successfully.');
+    }
+    public function createAnswer(Request $request){
+        $answer = new Answers;
+        $answer->users_id = $request->users_id;
+        $answer->questions_id = $request->questions_id;
+        $answer->body = $request->body;
+        $answer->save();
+
+        return response()->json([
+        "message" => "Answer created successfully."], 201);
+    }
+    public function updateAnswer(Request $request,$id,$answerid) {
+
+        $input = $request->all();
+        $validator = Validator::make($input, [
+            'body' => 'required'
+        ]);
+         if ($validator->fails()) {
+            return $this->sendError('Validation Error.', $validator->errors());
+        }
+
+         if (Answers::where('id', $answerid)->where('questions_id',$id)->exists()) {
+        $Answer = Answers::where('id', $id)->find($id);
+        $Answer->body = $input['body'];
+        $Answer->save();
+        return response()->json([$Answer,
+                "message" => "Answer updated successfully"
+            ], 200);
+    }
+    else{
+        return response()->json([
+                "message" => "Answer not found"
+            ], 404);
+    }
     }
     public function destroy($id,$answerid)
     {
@@ -43,8 +77,8 @@ class AnswersController extends Controller
         }
         $Comments =  Comments::where('answers_id', $id)->delete();
         $Answers =  Answers::where('id', $answerid)->delete();
-        $answer =  Answers::where('id', $id)->get();
+        $allanswers =  Answers::where('id', $answerid)->get();
 
-        return $this->sendResponse($answer->toArray(), 'Answer deleted successfully.');
+        return $this->sendResponse($allanswers->toArray(), 'Answer deleted successfully.');
     }
 }
