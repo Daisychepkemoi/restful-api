@@ -12,10 +12,9 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::post('login', 'AuthController@login');
-Route::post('register', 'AuthController@register');
-Route::get('/questions', 'QuestionsController@index');
-Route::post('/questions', 'QuestionsController@createQuestion');
+Route::group(['middleware' => 'auth:api'], function(){
+	Route::get('/questions', 'QuestionsController@index');
+	Route::post('/questions', 'QuestionsController@createQuestion');
 // Route::get('/question/{id}', 'QuestionsController@questionid');
 Route::get('/questions/{id}', 'QuestionsController@show');
 Route::post('/questions/{id}', 'QuestionsController@updateQuestion');
@@ -32,6 +31,12 @@ Route::post('/questions/{id}/answers/{answerid}/comments', 'CommentsController@c
 Route::get('/questions/{id}/answers/{answerid}/comments/{commentid}', 'CommentsController@show');
 Route::post('/questions/{id}/answers/{answerid}/comments/{commentid}', 'CommentsController@updateComment');
 Route::get('/questions/{id}/answers/{answerid}/comments/{commentid}/delete', 'CommentsController@destroy');
+});
+
+Route::post('login', 'AuthController@login');
+Route::post('register', 'AuthController@register');
+// Route::get('/questions', 'QuestionsController@index');
+
 // Route::post('register', 'API\RegisterController@register');
  // http://localhost:8000/api/products
 // Route::middleware('auth:api')->group( function () {
