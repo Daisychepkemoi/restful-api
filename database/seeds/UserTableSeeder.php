@@ -16,7 +16,7 @@ class UserTableSeeder extends Seeder
       //       'name' => 'daisy',
       //       'password' => Hash::make('123456'),
       //   ]);
-        $users=factory(App\User::class, 2)->create();
+        // $users=factory(App\User::class, 2)->create();
     
     }
 }

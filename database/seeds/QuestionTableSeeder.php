@@ -11,7 +11,7 @@ class QuestionTableSeeder extends Seeder
      */
     public function run()
     {
-        $questions=factory(App\Questions::class, 10)->create();
+        $questions=factory(App\Questions::class, 20)->create();
     
     }
 }
